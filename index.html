@@ -46,6 +46,8 @@ button{font-family:inherit}
 .lgh{font-size:13px;color:var(--muted);padding:2px 8px;border-radius:6px;background:var(--sunk);white-space:nowrap}
 .lvs{display:flex;gap:4px 4px;flex-wrap:nowrap}
 .lv{display:flex;align-items:center;gap:6px;padding:4px 10px 4px 5px;font-size:14px;color:var(--muted);border-radius:999px;cursor:pointer}
+.lv span{white-space:nowrap}
+.lvno{margin-right:.8em}
 .lv b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--sunk);color:var(--muted);font-size:13px}
 .lv em{font-style:normal;font-size:13px;color:var(--accent-dk)}
 .lv:hover{color:var(--ink);background:var(--sunk)}
@@ -216,11 +218,33 @@ ul.chk .y{color:var(--ok);font-weight:700}ul.chk .x{color:var(--bad);font-weight
 @keyframes pop{from{transform:scale(0);opacity:0}to{transform:none;opacity:1}}
 canvas.cf{position:fixed;inset:0;pointer-events:none;z-index:50;width:100vw;height:100vh}
 @media (prefers-reduced-motion: reduce){.card.enter,.stars span,.opt.shake{animation:none}.btn,.n,.dot{transition:none}}
+
+@media (max-width:639px){
+ .wrap{padding-block:12px 40px;gap:14px}
+ .top{gap:8px}
+ .top .t small{line-height:1.6}
+ .top .sep,.srcx{display:none}
+ .top .src{display:block}
+ .top h1{font-size:19px;text-wrap:pretty}
+ .lvno{display:block;margin:0;font-size:14px;color:var(--accent-dk)}
+ .who{flex:1 1 0;min-width:0}
+ .who input{padding:5px 8px}
+ .snd{flex:none}
+ .lvmap{padding:6px 0;gap:4px 14px;margin-bottom:8px}
+ .need{font-size:13px;line-height:1.5}
+ .side{padding:12px 16px}
+ .card{padding:20px 16px 18px;gap:18px;border-radius:12px}
+ .card h2{font-size:19px}
+ .kit,.key{padding:12px 14px}
+ .opt{padding:11px 12px}
+ .explain{padding:14px}
+ .cmd{padding:12px 56px 12px 12px;font-size:13px}
+}
 </style>
 
 <div class="wrap">
   <div class="top">
-    <div class="t"><small>WEEK3 · Docker 系統的備份、還原與主機安全　｜　主要來源：學生實作手冊（依步驟操作版，對應教師講義 v2.1），與老師講義修訂版不一致處以手冊為準</small><div class="h1row"><h1>第 1 關　資料在哪裡？先把資料庫打包</h1><div class="pgdots"><span id="pgdone">本關題數</span><div class="dots" id="dots" aria-label="本關進度"></div></div></div></div>
+    <div class="t"><small>WEEK3 · Docker 系統的備份、還原與主機安全<span class="sep">　｜　</span><span class="src">主要來源：學生實作手冊<span class="srcx">（依步驟操作版，對應教師講義 v2.1），與老師講義修訂版不一致處以手冊為準</span></span></small><div class="h1row"><h1><span class="lvno">第 1 關</span>資料在哪裡？先把資料庫打包</h1><div class="pgdots"><span id="pgdone">本關題數</span><div class="dots" id="dots" aria-label="本關進度"></div></div></div></div>
     <div class="who"><input id="sid" placeholder="學號" aria-label="學號" autocomplete="off"><input id="sname" placeholder="姓名" aria-label="姓名" autocomplete="off"></div>
     <button class="snd" id="snd" aria-pressed="true">🔊 音效</button>
   </div>
@@ -576,7 +600,7 @@ function levelDone(n){const L=LEVELS[n];return L&&L.cards.every(c=>c.done());}
 function paintLevels(){document.querySelectorAll('.lv[data-lv]').forEach(el=>{const n=+el.dataset.lv,L=LEVELS[n];el.classList.toggle('cur',n===S.lv);el.classList.toggle('done',!!L&&levelDone(n)&&n!==S.lv);el.classList.toggle('soon',!L);
   const em=el.querySelector('em');if(em)em.textContent='';});
   const pd=document.getElementById('pgdone'),CL=LEVELS[S.lv];if(pd&&CL)pd.textContent='本關 '+CL.cards.filter(c=>c.done()).length+' / '+CL.cards.length+' 題';
-  const h=document.querySelector('.top h1');if(h&&LEVELS[S.lv])h.textContent=LEVELS[S.lv].h1;}
+  const h=document.querySelector('.top h1');if(h&&LEVELS[S.lv]){const t=LEVELS[S.lv].h1.split('　');h.innerHTML='<span class="lvno">'+t[0]+'</span>'+t.slice(1).join('　');}}
 function starMsg(st,ok,total){const m=['這關的觀念還不熟：從第一題再走一次，每題都點開選項看解釋。','抓到一部分了：先到未完成答題，答錯的題目重讀選項解釋。','大部分都掌握了：回頭看答錯的那幾題，就能補齊。','全部答對，這關的觀念都掌握了！'][st];return `<b>${m}</b><br>已答對 ${ok} / ${total} 題（每答對 1/3 得 1 顆星）。`;}
 function firstTodo(){return curCards().findIndex(c=>!c.done());}
 function wireFinishNav(){const C=curCards();const b=document.getElementById('back');if(b)b.onclick=()=>{S.i=C.length-1;save();render();};
